@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script>document.addEventListener("DOMContentLoaded",function(){if(!document.getElementById("ows-staging-bar"))document.body.insertAdjacentHTML("afterbegin","<div id=\"ows-staging-bar\" style=\"background:#7a1f1f;color:#fff;font:600 14px/1.4 system-ui,sans-serif;padding:6px 16px;text-align:center\">STAGING: not the live site. Live: <a style=\"color:#fff\" href=\"https://open-scripture-systems.github.io/\">open-scripture-systems.github.io</a></div>")})</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>回答の送信 | みことば工房</title>
+<style>
+:root { --bg: #f6f5f1; --sheet: #fff; --ink: #1c1917; --ink2: #57534e; --rule: #d6d3d1; --accent: #24614a; --on: #fff; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --sheet: #292524; --ink: #f5f5f4; --ink2: #d6d3d1; --rule: #57534e; --accent: #6fbf9a; --on: #0c0a09; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.7 system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif; }
+.wrap { max-width: 640px; margin: 0 auto; padding-block: 32px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px; padding: 20px; }
+h1 { font-size: 1.5em; margin: 0 0 12px; }
+p { margin: 0 0 12px; }
+.small { font-size: .88em; color: var(--ink2); }
+button { font: 600 17px inherit; font-family: inherit; min-height: 48px; padding: 10px 20px; border-radius: 10px; border: 0; background: var(--accent); color: var(--on); cursor: pointer; }
+pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--rule); border-radius: 8px; padding: 10px; font-size: 14px; max-height: 240px; overflow: auto; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main class="wrap"><div class="card" id="box"><h1>回答の送信</h1><p>読み込んでいます…</p></div></main>
+<script>
+/* The review page on claude.ai cannot reach Google itself, so its "send" button opens this page with the answers in
+ * the part of the address after "#", which the browser never sends to any server. This page posts them to the
+ * site's Google Form (answers go to a private Sheet that only the site's owner can open), then clears the address. */
+(function () {
+  var CFG = {"endpoint": "https://docs.google.com/forms/d/e/1FAIpQLScbdIFMa6fK2oNm-3XzsN3w24x-2OJOV3LlElWYLEPMZq3wag/formResponse", "fields": {"message": "entry.1109621352", "page": "entry.1392149875", "lang": "entry.1696363649", "contact": "entry.720795985"}};
+  var box = document.getElementById('box');
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function show(h) { box.innerHTML = h; }
+  var raw = (location.hash.match(/^#r=(.+)$/) || [])[1], data = null;
+  try {
+    var b = raw.replace(/-/g, '+').replace(/_/g, '/');
+    data = JSON.parse(decodeURIComponent(escape(atob(b + '==='.slice((b.length + 3) % 4)))));
+  } catch (e) { data = null; }
+  if (!data || !data.text) {
+    show('<h1>回答の送信</h1><p>送る回答がありません。確認ページの最後にある「回答を送る」から開いてください。</p>' +
+      '<p class="small">This page sends answers from the review page. Open it from the "回答を送る" button there.</p>');
+    return;
+  }
+  try { history.replaceState(null, '', location.pathname); } catch (e) { /* the address keeps the answers; nothing is sent from it */ }
+  var key = 'ows-sent-' + raw.length + '-' + raw.slice(-24);
+  var already = false;
+  try { already = sessionStorage.getItem(key) === '1'; } catch (e) {}
+  function summary() {
+    return '<p>' + esc(data.name || '（お名前なし）') + ' さんの回答：' + esc(data.count || '') + '</p>';
+  }
+  function send() {
+    show('<h1>送っています…</h1>' + summary());
+    var body = new FormData();
+    body.append(CFG.fields.message, '[口語訳 対応づけの確認' + (data.mode ? ' / ' + data.mode : '') + ']\n' + data.text);
+    body.append(CFG.fields.page, data.page || 'kougo-review');
+    body.append(CFG.fields.lang, 'ja');
+    body.append(CFG.fields.contact, data.name || '');
+    // no-cors: Google answers with nothing the page can read, so "sent" means the request left without a network error
+    fetch(CFG.endpoint, { method: 'POST', mode: 'no-cors', body: body, credentials: 'omit', referrerPolicy: 'no-referrer' }).then(function () {
+      try { sessionStorage.setItem(key, '1'); } catch (e) {}
+      show('<h1>届きました。ありがとうございました</h1>' + summary() +
+        '<p>このページは閉じてかまいません。答えを直したときは、確認ページでもう一度「回答を送る」を押してください。新しい回答が届き、いちばん新しいものを使います。</p>');
+    }, function () {
+      show('<h1>送れませんでした</h1>' + summary() +
+        '<p>インターネットにつながっているか確かめて、もう一度押してください。</p><button id="again">もう一度送る</button>' +
+        '<p class="small">それでも送れないときは、下の文字をコピーして、このページを紹介した人に送ってください。</p><pre>' + esc(data.text) + '</pre>');
+      document.getElementById('again').onclick = send;
+    });
+  }
+  if (already) {
+    show('<h1>この回答は送信済みです</h1>' + summary() + '<p>もう一度送るときは、下のボタンを押してください。</p><button id="again">もう一度送る</button>');
+    document.getElementById('again').onclick = send;
+  } else send();
+})();
+</script>
+</body>
+</html>

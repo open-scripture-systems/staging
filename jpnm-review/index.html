@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>document.addEventListener("DOMContentLoaded",function(){if(!document.getElementById("ows-staging-bar"))document.body.insertAdjacentHTML("afterbegin","<div id=\"ows-staging-bar\" style=\"background:#7a1f1f;color:#fff;font:600 14px/1.4 system-ui,sans-serif;padding:6px 16px;text-align:center\">STAGING: not the live site. Live: <a style=\"color:#fff\" href=\"https://open-scripture-systems.github.io/\">open-scripture-systems.github.io</a></div>")})</script>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Suggested corrections to the Japanese Freedom Bible (jpnm) in Mark 1, checked against the Byzantine Greek, with the Greek word by word.">
+<script>try{if(/[?&]text=large\b/.test(location.search)||localStorage.getItem('ows-text')==='large')document.documentElement.classList.add('owsbig')}catch(e){}</script>
+<title>Freedom Bible Review</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: one reading column of verse cards; each card goes Japanese, then the reasoning steps, then the Greek word by word, then the decision. Indigo (藍) accent. */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --sunk:#eceff4; --fg:#1d2330; --muted:#5d6678; --line:#d7dce5;
+  --accent:#28407a; --accent-soft:#e3e9f6;
+  --ok:#1f7a4a; --ok-soft:#e1f2e8; --warn:#9a5b00; --warn-soft:#fbefd9; --bad:#a3322b; --bad-soft:#f8e3e1;
+  --byz:#1f7a4a; --na:#a3322b; --cite:#fff1b8; --cite-fg:#3d3200;
+  --f-ui:"Noto Sans JP",system-ui,-apple-system,"Hiragino Sans",sans-serif;
+  --f-jp:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-gr:"Noto Serif","Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151c; --surface:#1a1f29; --sunk:#222835; --fg:#e6e9ef; --muted:#9aa3b5; --line:#2f3646;
+  --accent:#9db4f0; --accent-soft:#25304a;
+  --ok:#6fd19c; --ok-soft:#173327; --warn:#f0b75e; --warn-soft:#3a2c14; --bad:#f08b84; --bad-soft:#3d1d1b;
+  --byz:#6fd19c; --na:#f08b84; --cite:#5a4b12; --cite-fg:#fff3c4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151c; --surface:#1a1f29; --sunk:#222835; --fg:#e6e9ef; --muted:#9aa3b5; --line:#2f3646;
+  --accent:#9db4f0; --accent-soft:#25304a;
+  --ok:#6fd19c; --ok-soft:#173327; --warn:#f0b75e; --warn-soft:#3a2c14; --bad:#f08b84; --bad-soft:#3d1d1b;
+  --byz:#6fd19c; --na:#f08b84; --cite:#5a4b12; --cite-fg:#fff3c4; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.wrap{max-width:860px;margin:0 auto;display:grid;gap:20px}
+h1{font-size:1.6rem;margin:0;text-wrap:balance;letter-spacing:.01em}
+h2{font-size:1.15rem;margin:0;text-wrap:balance}
+h3{font-size:.95rem;margin:0}
+p{margin:0}
+.muted{color:var(--muted)}
+.lede{display:grid;gap:8px;max-width:65ch}
+.warnbox{background:var(--warn-soft);color:var(--fg);border-left:4px solid var(--warn);padding:10px 14px;border-radius:4px}
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+nav.tabs button{font:inherit;background:none;border:0;padding:8px 14px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+button:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.bar label{display:flex;gap:6px;align-items:center;font-size:.9rem;color:var(--muted)}
+select,textarea{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.progress{margin-left:auto;font-size:.9rem;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:16px;min-width:0}
+.head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ref{font-weight:700;font-size:1.1rem;margin-right:4px}
+.chip{font-size:.75rem;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.chip.high{background:var(--ok-soft);color:var(--ok)} .chip.medium{background:var(--warn-soft);color:var(--warn)}
+.chip.native{background:var(--accent-soft);color:var(--accent)}
+.chip.st-keep{background:var(--ok);color:var(--surface)} .chip.st-fix{background:var(--warn);color:var(--surface)} .chip.st-drop{background:var(--bad);color:var(--surface)}
+.jp{font-family:var(--f-jp);font-size:1.08rem;line-height:1.9}
+.pair{display:grid;grid-template-columns:5.5em 1fr;gap:6px 12px;align-items:baseline}
+.pair dt{font-size:.8rem;color:var(--muted);letter-spacing:.04em}
+.pair dd{margin:0;min-width:0}
+mark.cur{background:var(--bad-soft);color:var(--fg);padding:0 2px;border-radius:3px}
+mark.new{background:var(--ok-soft);color:var(--fg);padding:0 2px;border-radius:3px}
+.steps{display:grid;gap:10px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps>li{display:grid;grid-template-columns:28px 1fr;gap:10px;counter-increment:s}
+.steps>li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:.8rem;font-weight:700}
+.steps>li>div{min-width:0;display:grid;gap:4px}
+.verdict{font-weight:500}
+.en{color:var(--accent);font-size:.92em}
+.gr{font-family:var(--f-gr)}
+ul.cites{margin:0;padding-left:1.2em;display:grid;gap:2px}
+ul.cites a{color:var(--accent);font-weight:500}
+.verdict.ok{color:var(--ok)} .verdict.warn{color:var(--warn)} .verdict.bad{color:var(--bad)}
+.gr{font-family:var(--f-gr)}
+.inter{display:flex;flex-wrap:wrap;gap:6px}
+.w{font:inherit;text-align:left;cursor:pointer;background:var(--sunk);border:1px solid transparent;border-radius:6px;padding:5px 8px;display:grid;gap:0;min-width:3.5em;color:var(--fg)}
+.w .g{font-family:var(--f-gr);font-size:1.12rem}
+.w .t{font-size:.72rem;color:var(--muted);font-style:italic}
+.w .e{font-size:.78rem}
+.w.cite{background:var(--cite);color:var(--cite-fg);border-color:var(--warn)}
+.w.cite .t{color:inherit}
+.w.byz{border:1px dashed var(--byz)}
+.w.na{border:1px dashed var(--na)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.w.na .g{text-decoration:line-through;text-decoration-color:var(--na)}
+.w[aria-pressed="true"]{outline:2px solid var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--sunk)}
+.legend .lc::before{background:var(--cite);border:1px solid var(--warn)}
+.legend .lb::before{border:1px dashed var(--byz)}
+.legend .ln::before{border:1px dashed var(--na)}
+.legend s{text-decoration-color:var(--na)}
+.detail{background:var(--sunk);border-radius:8px;padding:12px 14px;display:grid;gap:6px;font-size:.92rem}
+.detail .big{font-family:var(--f-gr);font-size:1.5rem}
+.detail table{border-collapse:collapse}
+.detail td{padding:2px 10px 2px 0;vertical-align:top}
+.detail td:first-child{color:var(--muted);white-space:nowrap;font-size:.82rem}
+details summary{cursor:pointer;color:var(--accent);font-size:.9rem}
+.decide{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:inherit;cursor:pointer;border-radius:6px;padding:7px 14px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.btn[aria-pressed="true"].keep{background:var(--ok);color:var(--surface);border-color:var(--ok)}
+.btn[aria-pressed="true"].fix{background:var(--warn);color:var(--surface);border-color:var(--warn)}
+.btn[aria-pressed="true"].drop{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.btn.primary{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.btn.ghost{border-color:transparent;color:var(--accent)}
+textarea{width:100%;min-height:3.2em;resize:vertical}
+textarea.jp{font-size:1rem}
+.saved{font-size:.85rem;color:var(--muted)}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.prim{display:grid;gap:22px}
+.prim section{display:grid;gap:10px}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:.92rem}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl th{font-size:.78rem;color:var(--muted);letter-spacing:.04em;font-weight:500}
+.alpha{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.alpha div{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;display:grid}
+.alpha .gl{font-family:var(--f-gr);font-size:1.3rem}
+.alpha small{color:var(--muted)}
+@media (max-width:520px){.pair{grid-template-columns:1fr}.pair dt{margin-top:4px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}
+.how{margin:0;padding-left:1.4em;display:grid;gap:4px;max-width:65ch}
+.lede a{color:var(--accent)}
+.a2bar{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center;justify-content:space-between;max-width:860px;margin:0 auto 12px;font-size:14px}
+.a2bar a{color:var(--fg);text-decoration:none;font-weight:700}
+.a2bar span{color:var(--muted)}
+.a2foot{max-width:860px;margin:32px auto 0;font-size:13px;color:var(--muted)}
+.a2foot a{color:var(--accent)}
+.rnote{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+
+<style>
+.owsctl { margin-left: auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.owsbig-btn, .owslang-btn { font: 600 15px var(--a2-ui, system-ui, sans-serif); color: var(--ink, #1c1917); background: var(--sheet, #fff);
+  border: 2px solid currentColor; border-radius: 999px; padding: 8px 16px; min-height: 44px; cursor: pointer; }
+.owsbig-btn:hover, .owslang-btn:hover { background: var(--paper, #f3f1f1); }
+.owsbig-btn:focus-visible, .owslang-btn:focus-visible { outline: 3px solid var(--focus, #0069a8); outline-offset: 2px; }
+.owsbig-btn[aria-pressed="true"] { background: var(--ink, #1c1917); color: var(--sheet, #fff); }
+.a2bar-home { justify-content: flex-end; }
+html.owsbig body { zoom: 1.25; }
+html.owsbig { --ink-2: var(--ink); --muted: var(--fg, var(--ink)); }
+html.owsbig .owsctl { zoom: 0.8; }
+html.owsbig .owsctl button { font-size: 19px; min-height: 55px; }
+html.owsbig :is(p, li, td, dd, blockquote) { line-height: 1.7; }
+html.owsbig a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+html.owsbig :is(button, select, input, [role="button"], [role="tab"], [role="option"]) { min-height: 44px; }
+html.owsbig :is([lang="grc"], [lang="el"], [lang="he"], [lang="hbo"], .gk, .grk, .greek, .heb, .hebrew, .orig) { font-size: 112%; }
+</style>
+<script>try{var m=/[?&]lang=(ja|en)\b/.exec(location.search),l=m?m[1]:localStorage.getItem('ows-lang');if(m)localStorage.setItem('ows-lang',l);if(l==='ja'){document.documentElement.classList.add('owsja');document.documentElement.lang='ja';setTimeout(function(){document.documentElement.classList.add('owsja-ready')},2500)}}catch(e){}</script>
+<style>html.owsja:not(.owsja-ready) body{visibility:hidden}.owsja-note{max-width:1180px;margin:6px auto 0;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));font:14px/1.6 var(--a2-ui,system-ui,sans-serif);color:var(--ink-2,#473c39)}html.owsja body{font-family:var(--body,system-ui),"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;line-break:strict}</style>
+</head>
+<body>
+<nav class="a2bar" aria-label="Site"><style>.a2home{display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 8px;border:1px solid currentColor;border-radius:999px;font-weight:600;text-decoration:none}.a2home .a2ico{flex:none}.a2name{font-weight:600}</style><a class="a2home" href="../"><svg class="a2ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M3 11.2 12 4l9 7.2V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" fill="currentColor"/></svg><span>Home</span></a><span class="a2name">Word of God Workshop</span><span>Free Bible study tools from open data</span><span class="owsctl"><button type="button" class="owslang-btn" lang="ja">日本語</button><button type="button" class="owsbig-btn" aria-pressed="false">Larger text</button></span></nav>
+<main class="wrap">
+  <header class="lede">
+    <h1>Freedom Bible review: Mark 1</h1>
+    <p>Suggested corrections to the Japanese Freedom Bible (<a href="https://ebible.org/jpnm/">jpnm</a>), measured against the Robinson-Pierpont Byzantine Greek that eBible.org names as its master text. These are the Mark 1 rows sent to eBible so far. Each card shows the Japanese, the steps behind the suggestion, and the Greek word by word, so anyone can check it.</p>
+    <h2>How the rows were made</h2>
+    <ol class="how">
+      <li>A script lines up each verse of jpnm with the Robinson-Pierpont Greek, the World English Bible (WEB) and 口語訳 (1955).</li>
+      <li>An AI model reads each verse and drafts a suggestion, with a reason that cites Strong's numbers.</li>
+      <li>A script checks each claim against STEPBible's tagged Greek (TAGNT): are the cited words in the Byzantine verse, and do the two Greek texts differ there?</li>
+      <li>Japanese is my native language, so I go through each row myself and keep, change or drop it. Only rows I've reviewed are shown, with my note at the bottom of each card.</li>
+    </ol>
+    <p class="warnbox">Each row started as an AI draft (step 2). I reviewed, edited and finalized every row shown here, and I take responsibility for it. They are offered as suggestions for the editor to weigh. Greek data: <a href="https://github.com/STEPBible/STEPBible-Data">STEPBible TAGNT</a> (CC BY 4.0).</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-review" aria-selected="true" aria-controls="view-review">Review</button>
+    <button role="tab" id="tab-greek" aria-selected="false" aria-controls="view-greek">Greek basics</button>
+  </nav>
+
+  <div id="view-review" role="tabpanel" aria-labelledby="tab-review" class="wrap">
+    <div class="bar" hidden>
+      <label for="f-ch">Chapter <select id="f-ch"></select></label>
+      <label for="f-conf">Confidence
+        <select id="f-conf"><option value="">All</option><option value="high">High</option><option value="medium">Medium</option><option value="check-with-a-native-reader">Needs my check</option></select></label>
+      <label for="f-st">Status
+        <select id="f-st"><option value="">All</option><option value="open">Not decided</option><option value="keep">Keep</option><option value="fix">Fix</option><option value="drop">Drop</option></select></label>
+      <span class="progress" id="progress"></span>
+    </div>
+    <p class="muted" id="dbnote" hidden></p>
+    <div id="cards" class="wrap"><p class="empty">Loading the Mark 1 rows…</p></div>
+  </div>
+
+  <div id="view-greek" role="tabpanel" aria-labelledby="tab-greek" class="prim" hidden>
+    <section>
+      <h2>How to read one Greek word here</h2>
+      <p>Every Greek word on a card has four parts. Take ἀποστέλλω in Mark 1:2.</p>
+      <div class="tbl" tabindex="0"><table>
+        <tr><th>Part</th><th>Example</th><th>What it tells you</th></tr>
+        <tr><td>The word</td><td class="gr">ἀποστέλλω</td><td>As written in the Greek text.</td></tr>
+        <tr><td>Sound</td><td><i>apostellō</i></td><td>How to say it. ō is a long o.</td></tr>
+        <tr><td>Strong's number</td><td>G649</td><td>A dictionary number. The same number means the same dictionary word, whatever ending it has.</td></tr>
+        <tr><td>Grammar code</td><td>V-PAI-1S</td><td>Verb, Present, Active, Indicative, 1st person Singular: "I send". Tap any word on a card and the code is spelled out.</td></tr>
+      </table></div>
+    </section>
+    <section>
+      <h2>Cases work like Japanese particles</h2>
+      <p>Greek marks a noun's role with its ending, the way Japanese adds a particle after it. Word order is free, so the ending is what matters.</p>
+      <div class="tbl" tabindex="0"><table>
+        <tr><th>Code</th><th>Case</th><th>Close Japanese</th><th>Example</th></tr>
+        <tr><td>N</td><td>Nominative (subject)</td><td>が・は</td><td><span class="gr">ὁ Ἰησοῦς</span> イエス<b>が</b></td></tr>
+        <tr><td>A</td><td>Accusative (object)</td><td>を</td><td><span class="gr">τὴν ὁδόν</span> 道<b>を</b></td></tr>
+        <tr><td>G</td><td>Genitive (of, from)</td><td>の・から</td><td><span class="gr">τοῦ θεοῦ</span> 神<b>の</b></td></tr>
+        <tr><td>D</td><td>Dative (to, for, by)</td><td>に・で</td><td><span class="gr">αὐτῷ</span> 彼<b>に</b></td></tr>
+        <tr><td>V</td><td>Vocative (calling)</td><td>よ</td><td><span class="gr">κύριε</span> 主<b>よ</b></td></tr>
+      </table></div>
+    </section>
+    <section>
+      <h2>Verb tense is about the kind of action</h2>
+      <p>Greek tense says how the action is seen (one act, ongoing, finished with a result) as much as when it happens.</p>
+      <div class="tbl" tabindex="0"><table>
+        <tr><th>Code</th><th>Tense</th><th>Close Japanese</th></tr>
+        <tr><td>P</td><td>Present: ongoing or now</td><td>する・している</td></tr>
+        <tr><td>I</td><td>Imperfect: was going on in the past</td><td>していた</td></tr>
+        <tr><td>A, 2A</td><td>Aorist: one whole act, usually past (2A is another spelling pattern, same meaning)</td><td>した</td></tr>
+        <tr><td>F</td><td>Future</td><td>するだろう・する</td></tr>
+        <tr><td>R</td><td>Perfect: done, and the result stays</td><td>してある・してしまった</td></tr>
+        <tr><td>L</td><td>Pluperfect: had been done</td><td>していたのだった</td></tr>
+      </table></div>
+      <div class="tbl" tabindex="0"><table>
+        <tr><th>Code</th><th>Voice</th><th>Close Japanese</th></tr>
+        <tr><td>A</td><td>Active</td><td>する</td></tr>
+        <tr><td>P</td><td>Passive</td><td>される</td></tr>
+        <tr><td>M</td><td>Middle: for oneself, by oneself</td><td>自分で〜する</td></tr>
+        <tr><td>D, N, O</td><td>Middle or passive form with an active meaning</td><td>する (form only)</td></tr>
+      </table></div>
+      <div class="tbl" tabindex="0"><table>
+        <tr><th>Code</th><th>Mood</th><th>Close Japanese</th></tr>
+        <tr><td>I</td><td>Indicative: a statement or question</td><td>〜する。〜するか。</td></tr>
+        <tr><td>S</td><td>Subjunctive: may, so that, if</td><td>〜するように・〜するなら</td></tr>
+        <tr><td>M</td><td>Imperative: a command</td><td>〜せよ・〜しなさい</td></tr>
+        <tr><td>N</td><td>Infinitive</td><td>〜すること</td></tr>
+        <tr><td>P</td><td>Participle: verb used like an adjective</td><td>〜している人・〜して</td></tr>
+      </table></div>
+    </section>
+    <section>
+      <h2>Why most rows mention two Greek texts</h2>
+      <p>Greek New Testament manuscripts differ by a few words in many verses. The <b>Byzantine text</b> follows the majority of later manuscripts; eBible.org says the Freedom Bible follows it. The <b>critical text</b> (Nestle-Aland, NA28) follows a smaller group of older manuscripts; 口語訳, 新改訳 and most modern Bibles follow it. Many rows here are places where the Japanese reads like the critical text instead of the Byzantine. The cards mark words found only in one text: a dashed green box is Byzantine only, a struck-through red box is critical text only. That marking comes from STEPBible's tagged Greek (TAGNT), not from the AI.</p>
+    </section>
+    <section>
+      <h2>The alphabet with Japanese sounds</h2>
+      <div class="alpha" id="alpha"></div>
+    </section>
+  </div>
+</main>
+<footer><p class="a2foot">This is not an eBible.org page. Built from open data; see <a href="../sources/">sources and licences</a>.</p></footer>
+
+<script>
+(function(){
+"use strict";
+var ROWS=[], DEC={}, db=null, comments=null, me=null, saving={};
+
+/* ---------- grammar code decoder (Robinson codes as used by STEPBible TAGNT) ---------- */
+var POS={N:"noun",V:"verb",T:"article (the)",P:"personal pronoun",A:"adjective",R:"relative pronoun (who, which)",D:"demonstrative (this, that)",F:"reflexive pronoun (himself)",I:"question word",X:"indefinite (someone, any)",S:"possessive (my, your)",C:"reciprocal (one another)",K:"correlative",Q:"correlative",ADV:"adverb",CONJ:"conjunction (and, but)",PREP:"preposition",PRT:"particle",INJ:"interjection (look!)",HEB:"Hebrew word",ARAM:"Aramaic word",COND:"conditional (if)"};
+var CASE={N:["nominative","が・は (subject)"],G:["genitive","の・から (of, from)"],D:["dative","に・で (to, for, by)"],A:["accusative","を (object)"],V:["vocative","よ (calling)"]};
+var NUM={S:"singular",P:"plural"}, GEN={M:"masculine",F:"feminine",N:"neuter"};
+var TENSE={P:["present","する・している"],I:["imperfect","していた"],A:["aorist","した"],F:["future","するだろう"],R:["perfect","してある (result stays)"],L:["pluperfect","していた (had)"]};
+var VOICE={A:["active","する"],M:["middle","自分で〜する"],P:["passive","される"],E:["middle or passive","form only"],D:["middle form, active meaning","する"],O:["passive form, active meaning","する"],N:["middle or passive form, active meaning","する"]};
+var MOOD={I:["indicative","statement or question"],S:["subjunctive","〜するように・〜なら"],O:["optative","〜であるように"],M:["imperative","〜せよ"],N:["infinitive","〜すること"],P:["participle","〜している人・〜して"]};
+var PERS={"1":["1st person","私・私たち"],"2":["2nd person","あなた・あなたがた"],"3":["3rd person","彼・彼ら・それ"]};
+function decode(code){
+  if(!code) return [];
+  var parts=code.split("-"), head=parts[0], out=[];
+  if(head==="V"){
+    out.push(["Part of speech","verb"]);
+    var t=parts[1]||"", m=t.match(/^(2?)([PIAFRL])([AMPEDON])([ISOMNP])$/);
+    if(m){
+      out.push(["Tense",TENSE[m[2]][0]+(m[1]?" (2nd form)":"")+" ・ "+TENSE[m[2]][1]]);
+      out.push(["Voice",VOICE[m[3]][0]+" ・ "+VOICE[m[3]][1]]);
+      out.push(["Mood",MOOD[m[4]][0]+" ・ "+MOOD[m[4]][1]]);
+    } else if(t) out.push(["Form",t]);
+    var r=parts[2]||"";
+    var pm=r.match(/^([123])([SP])$/);
+    if(pm){out.push(["Person",PERS[pm[1]][0]+" "+NUM[pm[2]]+" ・ "+PERS[pm[1]][1]])}
+    var cm=r.match(/^([NGDAV])([SP])([MFN])$/);
+    if(cm){out.push(["Case",CASE[cm[1]][0]+" ・ "+CASE[cm[1]][1]]);out.push(["Number, gender",NUM[cm[2]]+", "+GEN[cm[3]]])}
+    return out;
+  }
+  out.push(["Part of speech",POS[head]||head]);
+  var rest=parts.slice(1).join("-");
+  var c=rest.match(/^([123])?([NGDAV])([SP])([MFN])?/);
+  if(c){
+    if(c[1]) out.push(["Person",PERS[c[1]][0]+" ・ "+PERS[c[1]][1]]);
+    out.push(["Case",CASE[c[2]][0]+" ・ "+CASE[c[2]][1]]);
+    out.push(["Number"+(c[4]?", gender":""),NUM[c[3]]+(c[4]?", "+GEN[c[4]]:"")]);
+  }
+  if(/-C$/.test(code)) out.push(["Degree","comparative (more)"]);
+  if(/-S$/.test(code)&&head==="A") out.push(["Degree","superlative (most)"]);
+  if(/-N$/.test(code)||/-N\b/.test(code)) out.push(["Note","negative form (no, not)"]);
+  if(/-P$/.test(code)) out.push(["Note","proper name"]);
+  return out;
+}
+
+/* ---------- helpers ---------- */
+function el(tag,attrs,kids){var e=document.createElement(tag);if(attrs)for(var k in attrs){if(k==="text")e.textContent=attrs[k];else if(k==="cls")e.className=attrs[k];else e.setAttribute(k,attrs[k])}(kids||[]).forEach(function(c){if(c==null)return;e.appendChild(typeof c==="string"?document.createTextNode(c):c)});return e}
+function catLabel(c){return {omission:"missing word",addition:"added word",mistranslation:"wrong sense",typo:"typo",
+  "name-number":"name or number","key-term":"key term"}[c]||c}
+function confLabel(c){return c==="check-with-a-native-reader"?"needs my check":c}
+function confCls(c){return c==="check-with-a-native-reader"?"native":c}
+function markIn(text,part,cls){var i=text.indexOf(part);if(i<0)return [text];return [text.slice(0,i),el("mark",{cls:cls,text:part}),text.slice(i+part.length)]}
+function status(id){return (DEC[id]&&DEC[id].status)||"open"}
+function pad4(s){return ("000"+s).slice(-4)}
+function wsLink(s){return "https://open-scripture-systems.github.io/word-study/#G"+pad4(s)}
+function enOf(w){return (w.gl||w.lg||"").replace(/[<>.,;:¶]/g,"").trim()}
+/* Greek in a reason, each word followed by its English meaning */
+function glossed(text,map){
+  var out=[], re=/[Ͱ-Ͽἀ-῿]+/g, last=0, m;
+  while((m=re.exec(text))){
+    out.push(text.slice(last,m.index));
+    out.push(el("span",{cls:"gr",text:m[0]}));
+    var g=map&&map[m[0]];
+    if(g&&g.en) out.push(el("span",{cls:"en",text:" ‘"+g.en+"’"}));
+    last=re.lastIndex;
+  }
+  out.push(text.slice(last));
+  return out;
+}
+
+/* ---------- reasoning steps ---------- */
+function steps(r){
+  var c=r.checks, ol=el("ol",{cls:"steps"});
+  var cited=c.cited.map(function(x){return x.s});
+  // 1. cited words in the Byzantine verse
+  var present=c.cited.filter(function(x){return x.in_rp}).map(function(x){return "G"+x.s});
+  var absent=c.cited.filter(function(x){return !x.in_rp}).map(function(x){return "G"+x.s});
+  var list=el("ul",{cls:"cites"});
+  cited.forEach(function(s){var g=r.sg&&r.sg[s]||{};
+    list.appendChild(el("li",null,[el("a",{href:wsLink(s),target:"_blank",rel:"noopener",text:"G"+s}),
+      " ‘"+(g.en||"?")+"’"+(g.n?", used "+g.n+" times in the New Testament":"")]))});
+  var s1=el("div",null,[el("h3",{text:"Find the Greek words the reason names"}),
+    el("p",{text:cited.length?"The reason cites these words. They are highlighted yellow in the Greek below. Tap a number for its full Word Study entry.":"The reason cites no Strong's number."}),list,
+    el("p",{cls:"muted",text:(present.length?"In the Byzantine verse: "+present.join(", ")+". ":"")+(absent.length?"Not in the Byzantine verse: "+absent.join(", ")+". That is expected when the reason says the word is absent, or when it names a different word for comparison.":"")})]);
+  ol.appendChild(el("li",null,[s1]));
+  // 2. edition data
+  var v, cls;
+  if(!c.critical_claim){v="This row does not depend on a difference between Greek texts. It is about meaning, grammar or a typo, so check it with the word details in step 3.";cls="muted"}
+  else if(c.cited_word_differs){v="Edition data agrees: STEPBible marks a cited word as different between the Byzantine and the critical text in this verse.";cls="verdict ok"}
+  else if(c.edition_diff){v="Edition data shows a difference in this verse, but not at the cited word. Check whether the reason points at the right word.";cls="verdict warn"}
+  else{v="Edition data shows no word difference here. Word order and some spellings are not tracked, so no edition data backs this claim. Treat it as unconfirmed.";cls="verdict bad"}
+  var bz=r.words.filter(function(w){return r.byz_only.indexOf(w.wn)>=0&&w.byz&&!w.na}).map(function(w){return w.g.replace(/[.,;·¶]/g,"")+" ‘"+enOf(w)+"’ (G"+w.s+")"});
+  var na=r.words.filter(function(w){return r.na_only.indexOf(w.wn)>=0&&w.na&&!w.byz}).map(function(w){return w.g.replace(/[.,;·¶]/g,"")+" ‘"+enOf(w)+"’ (G"+w.s+")"});
+  var vars=r.words.filter(function(w){return w.var&&/Byz/.test(w.var)}).map(function(w){return w.g+" ⇄ "+w.var});
+  ol.appendChild(el("li",null,[el("div",null,[el("h3",{text:"Compare the two Greek texts"}),el("p",{cls:cls,text:v}),
+    bz.length?el("p",{cls:"gr"},[el("span",{cls:"muted",text:"Only in the Byzantine: "}),bz.join(", ")]):null,
+    na.length?el("p",{cls:"gr"},[el("span",{cls:"muted",text:"Only in the critical text: "}),na.join(", ")]):null,
+    vars.length?el("p",{cls:"gr"},[el("span",{cls:"muted",text:"Different word: "}),vars.join("; ")]):null])]));
+  // 3. word details
+  ol.appendChild(el("li",null,[el("div",null,[el("h3",{text:"Read the cited words"}),
+    el("p",{text:"Tap a yellow word below. Its meaning and grammar are spelled out, with the closest Japanese form. Ask: does the Japanese say what this word says?"})])]));
+  // 4. other translations
+  ol.appendChild(el("li",null,[el("div",null,[el("h3",{text:"Compare with other translations"}),
+    el("p",null,[el("span",{cls:"muted",text:"WEB (eBible's English, mostly Byzantine): "}),r.web||"none"]),
+    el("p",{cls:"jp"},[el("span",{cls:"muted",text:"口語訳 (critical text): "}),r.kougo||"none"]),
+    el("p",{cls:"muted",text:"If the WEB reads like the current Japanese, send the row as a question instead of a correction."})])]));
+  // 5. your call
+  ol.appendChild(el("li",null,[el("div",null,[el("h3",{text:"Make the Japanese call"}),
+    el("p",{text:"Read the better reading out loud. Is it natural, and does it change only what the reason covers? This step needs a native speaker; the first draft's Japanese is the weakest part."})])]));
+  return ol;
+}
+
+/* ---------- interlinear ---------- */
+function interlinear(r){
+  var cited=r.checks.cited.map(function(x){return x.s});
+  var box=el("div",{cls:"inter"}), detail=el("div",{cls:"detail",hidden:""}), current=null;
+  r.words.forEach(function(w){
+    if(!w.byz&&!w.na) return;
+    var cls="w"+(cited.indexOf(w.s)>=0?" cite":"")+(w.byz&&!w.na?" byz":"")+(w.na&&!w.byz?" na":"");
+    var b=el("button",{cls:cls,type:"button","aria-pressed":"false",title:w.na&&!w.byz?"Only in the critical text, not in the Byzantine":w.byz&&!w.na?"Only in the Byzantine":""},[
+      el("span",{cls:"g",text:w.g.replace(/¶/g,"")}),el("span",{cls:"t",text:w.tr||""}),el("span",{cls:"e",text:(w.gl||"").replace(/[<>]/g,"")}),(w.na&&!w.byz)?el("span",{cls:"sr",text:", only in the critical text"}):(w.byz&&!w.na)?el("span",{cls:"sr",text:", only in the Byzantine"}):null]);
+    b.addEventListener("click",function(){
+      if(current) current.setAttribute("aria-pressed","false");
+      if(current===b){current=null;detail.hidden=true;return}
+      current=b;b.setAttribute("aria-pressed","true");
+      detail.textContent="";
+      var t=el("table");
+      [["Dictionary form",w.lem],["Meaning",w.lg],["In this verse",enOf(w)],["Strong's","G"+w.s],["How common",w.n?"used "+w.n+" times in the New Testament":""],["Grammar code",w.m]].concat(decode(w.m))
+        .concat([["In which text",w.byz&&w.na?"both texts":w.byz?"Byzantine only":"critical text only"]])
+        .concat(w.var?[["Other reading",w.var]]:[]).forEach(function(p){if(p[1])t.appendChild(el("tr",null,[el("td",{text:p[0]}),el("td",{text:p[1]})]))});
+      detail.appendChild(el("div",{cls:"big",text:w.g.replace(/¶/g,"")}));
+      detail.appendChild(t);
+      detail.appendChild(el("p",null,[el("a",{href:wsLink(w.s),target:"_blank",rel:"noopener",text:"Open the full Word Study entry for G"+w.s}),
+        el("span",{cls:"muted",text:" (every verse, how English Bibles render it). "}),
+        el("a",{href:"https://biblehub.com/greek/"+w.s+".htm",target:"_blank",rel:"noopener",text:"Bible Hub lexicon"})]));
+      detail.hidden=false;
+    });
+    box.appendChild(b);
+  });
+  return el("div",{cls:"wrap",style:"gap:10px"},[
+    el("h3",{text:"The Greek, word by word"}),
+    el("div",{cls:"legend"},[el("span",{cls:"lc",text:"named in the reason"}),el("span",{cls:"lb",text:"only in the Byzantine (the Freedom Bible's master text)"}),el("span",{cls:"ln"},[el("s",{text:"crossed out"}),": only in the critical text (NA28)"])]),
+    (r.words.some(function(w){return w.na&&!w.byz})?el("p",{cls:"muted",text:"A crossed-out word is not in the Byzantine Greek the Freedom Bible follows. It appears only in the critical text that 口語訳 and most modern Bibles use. It is shown so you can see the difference, and the Japanese should not include it."}):null),
+    box,detail,
+    el("details",null,[el("summary",{text:"Robinson-Pierpont line (the master text, with Strong's and codes)"}),el("p",{cls:"gr",text:r.rp||""})])]);
+}
+
+/* ---------- decision ---------- */
+function decisionBox(r,card){
+  var d=DEC[r.id]||{}, st=d.status||"open";
+  var wrap=el("div",{cls:"decide"});
+  var btns=el("div",{cls:"btns"});
+  var ta=el("textarea",{cls:"jp",id:"better-"+r.id,"aria-label":"Better reading for "+r.ch+":"+r.v});
+  ta.value=d.better||r.better;
+  var note=el("textarea",{id:"note-"+r.id,placeholder:"Note for Claude (optional)","aria-label":"Note"});
+  note.value=d.note||"";
+  var msg=el("span",{cls:"saved",text:d.at?"Saved "+new Date(d.at).toLocaleString():""});
+  [["keep","Keep as is"],["fix","Keep with my fix"],["drop","Drop"]].forEach(function(o){
+    var b=el("button",{cls:"btn "+o[0],type:"button","aria-pressed":String(st===o[0]),text:o[1]});
+    b.addEventListener("click",function(){save(r,o[0],ta.value,note.value,msg)});
+    btns.appendChild(b);
+  });
+  var cbtn=el("button",{cls:"btn ghost",type:"button",text:"Comment on this row"});
+  cbtn.addEventListener("click",function(){
+    if(!comments){msg.textContent="Comments are not available in this view. Use the comment tool in the artifact's menu.";return}
+    comments.openComposer({element:card}).catch(function(){msg.textContent="The comment box did not open. Try the comment tool in the artifact's menu."});
+  });
+  btns.appendChild(cbtn);
+  wrap.appendChild(el("h3",{text:"Your decision"}));
+  wrap.appendChild(el("label",{"for":"better-"+r.id,cls:"muted",text:"Better reading (edit it if you fix it)"}));
+  wrap.appendChild(ta);wrap.appendChild(note);wrap.appendChild(btns);wrap.appendChild(msg);
+  if(!db){btns.querySelectorAll(".keep,.fix,.drop").forEach(function(b){b.disabled=true});msg.textContent="Decisions save only when you are signed in to claude.ai."}
+  return wrap;
+}
+function save(r,st,better,note,msg){
+  if(!db||saving[r.id]) return;
+  saving[r.id]=true;msg.textContent="Saving…";
+  var data={status:st,better:better,note:note,ref:r.book+" "+r.ch+":"+r.v,current:r.current,draft_better:r.better,at:Date.now()};
+  if(me) data.by=me;
+  db.collection("decisions").doc(r.id).set(data).then(function(){msg.textContent="Saved"})
+    .catch(function(e){msg.textContent=(e&&e.code==="not_granted")?"You can view this page but not save decisions.":"Not saved. Check your connection and press the button again."})
+    .finally(function(){saving[r.id]=false});
+}
+
+/* ---------- cards ---------- */
+function card(r){
+  var c=el("article",{cls:"card",id:"row-"+r.id});
+  var st=status(r.id);
+  c.appendChild(el("div",{cls:"head"},[el("span",{cls:"ref",text:"Mark "+r.ch+":"+r.v}),
+    el("span",{cls:"chip",text:catLabel(r.cat)}),el("span",{cls:"chip "+confCls(r.conf),text:confLabel(r.conf)}),
+    st!=="open"?el("span",{cls:"chip st-"+st,text:st}):null]));
+  var dl=el("dl",{cls:"pair"},[
+    el("dt",{text:"Verse now"}),el("dd",{cls:"jp"},markIn(r.jpnm.split("\n")[0],r.current,"cur")),
+    el("dt",{text:"Current"}),el("dd",{cls:"jp"},[el("mark",{cls:"cur",text:r.current})]),
+    el("dt",{text:"Better"}),el("dd",{cls:"jp"},[el("mark",{cls:"new",text:r.better})]),
+    r.alt?el("dt",{text:"Or"}):null,
+    r.alt?el("dd",null,[el("mark",{cls:"new jp",text:r.alt}),el("span",{cls:"muted"},[" ("].concat(glossed(r.alt_when,r.gloss)).concat([")"]))]):null,
+    el("dt",{text:"Reason"}),el("dd",null,glossed(r.reason,r.gloss))]);
+  c.appendChild(dl);
+  if(r.notes&&r.notes.length) c.appendChild(el("details",null,[el("summary",{text:"Footnotes in the Freedom Bible for this verse"})].concat(r.notes.map(function(n){return el("p",{cls:"jp",text:n})}))));
+  c.appendChild(el("div",{cls:"wrap",style:"gap:10px"},[el("h3",{text:"How this was reached"}),steps(r)]));
+  c.appendChild(interlinear(r));
+  if(r.review_note) c.appendChild(el("div",{cls:"rnote"},[el("h3",{text:"My note"}),el("p",{text:r.review_note})]));
+  return c;
+}
+var F={ch:"1",conf:"",st:""};
+function render(){
+  var list=ROWS.filter(function(r){return (!F.ch||String(r.ch)===F.ch)&&(!F.conf||r.conf===F.conf)&&(!F.st||status(r.id)===F.st)});
+  var box=document.getElementById("cards");box.textContent="";
+  if(!list.length) box.appendChild(el("p",{cls:"empty",text:"No rows match these filters."}));
+  list.forEach(function(r){box.appendChild(card(r))});
+  var inCh=ROWS.filter(function(r){return !F.ch||String(r.ch)===F.ch});
+  var done=inCh.filter(function(r){return status(r.id)!=="open"}).length;
+  document.getElementById("progress").textContent=done+" of "+inCh.length+" decided"+(F.ch?" in Mark "+F.ch:"");
+}
+
+/* ---------- alphabet ---------- */
+var AL=[["Α α","alpha","a","ア"],["Β β","beta","b","バ"],["Γ γ","gamma","g","ガ"],["Δ δ","delta","d","ダ"],["Ε ε","epsilon","e (short)","エ"],["Ζ ζ","zeta","z (dz)","ズ"],["Η η","eta","ē (long e)","エー"],["Θ θ","theta","th","ス (th)"],["Ι ι","iota","i","イ"],["Κ κ","kappa","k","カ"],["Λ λ","lambda","l","ラ (l)"],["Μ μ","mu","m","マ"],["Ν ν","nu","n","ナ"],["Ξ ξ","xi","x (ks)","クス"],["Ο ο","omicron","o (short)","オ"],["Π π","pi","p","パ"],["Ρ ρ","rho","r","ラ (r)"],["Σ σ ς","sigma","s","サ"],["Τ τ","tau","t","タ"],["Υ υ","upsilon","u / y","ユ"],["Φ φ","phi","ph (f)","ファ"],["Χ χ","chi","ch (kh)","カ (kh)"],["Ψ ψ","psi","ps","プス"],["Ω ω","omega","ō (long o)","オー"]];
+var ab=document.getElementById("alpha");
+AL.forEach(function(a){ab.appendChild(el("div",null,[el("span",{cls:"gl",text:a[0]}),el("span",{text:a[1]}),el("small",{text:a[2]+" ・ "+a[3]})]))});
+
+/* ---------- tabs and filters ---------- */
+function show(which){
+  ["review","greek"].forEach(function(n){
+    document.getElementById("tab-"+n).setAttribute("aria-selected",String(n===which));
+    document.getElementById("view-"+n).hidden=(n!==which);
+  });
+}
+document.getElementById("tab-review").addEventListener("click",function(){show("review")});
+document.getElementById("tab-greek").addEventListener("click",function(){show("greek")});
+["ch","conf","st"].forEach(function(k){document.getElementById("f-"+k).addEventListener("change",function(e){F[k]=e.target.value;render()})});
+
+/* ---------- load ---------- */
+fetch("data-mrk.json").then(function(r){return r.json()}).then(function(rows){
+  ROWS=rows;
+  var sel=document.getElementById("f-ch");
+  sel.appendChild(el("option",{value:"",text:"All of Mark"}));
+  Array.from(new Set(rows.map(function(r){return r.ch}))).sort(function(a,b){return a-b}).forEach(function(ch){
+    var o=el("option",{value:String(ch),text:"Mark "+ch+" ("+rows.filter(function(r){return r.ch===ch}).length+")"});
+    if(String(ch)===F.ch) o.selected=true; sel.appendChild(o);
+  });
+  render();
+}).catch(function(){document.getElementById("cards").innerHTML='<p class="empty">The Mark rows did not load. Reload the page.</p>'});
+
+if(window.claude&&window.claude.use){
+  window.claude.use("comments").then(function(c){comments=c}).catch(function(){});
+  window.claude.use("user").then(function(u){if(u&&u.id)return u.id().then(function(id){me=id})}).catch(function(){});
+  window.claude.use("db").then(function(d){
+    db=d;
+    var note=document.getElementById("dbnote");
+    if(!d){note.hidden=false;note.textContent="Sign in to claude.ai to save decisions. You can still read every row.";render();return}
+    var timer=setTimeout(function(){note.hidden=false;note.textContent="Saved decisions are slow to load. You can keep reading."},10000);
+    d.collection("decisions").onSnapshot(function(snap){
+      clearTimeout(timer);note.hidden=true;
+      var next={};snap.docs.forEach(function(s){next[s.id]=s.data()||{}});
+      var changed=JSON.stringify(next)!==JSON.stringify(DEC);DEC=next;
+      if(changed&&ROWS.length&&!document.activeElement.matches("textarea")) render();
+    },function(){clearTimeout(timer);note.hidden=false;note.textContent="Saved decisions could not load. Your choices may not save right now."});
+    render();
+  }).catch(function(){render()});
+}
+})();
+</script>
+<script>
+(function () {
+  var root = document.documentElement, KEY = 'ows-text', MIN = 14;
+  function floor(el) {
+    for (var n = el.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.textContent.trim()) {
+      var z = parseFloat(getComputedStyle(el).fontSize);
+      if (z && z < MIN) el.style.fontSize = MIN + 'px';
+      return;
+    }
+  }
+  function sweep(top) {
+    if (top.nodeType === 3) top = top.parentNode;
+    if (!top || top.nodeType !== 1) return;
+    if (top.closest('details:not([open])') && top.tagName !== 'DETAILS') return;
+    floor(top);
+    var all = top.getElementsByTagName('*');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.tagName === 'DETAILS' && !el.open) {  // closed: only its summary is drawn; the rest is swept when it opens
+        var sum = el.querySelector('summary');
+        if (sum) { floor(sum); [].forEach.call(sum.getElementsByTagName('*'), floor); }
+        i += el.getElementsByTagName('*').length;
+        continue;
+      }
+      floor(el);
+    }
+  }
+  var pending = [];
+  function later(nodes) {
+    if (!pending.length) requestAnimationFrame(function () { var p = pending; pending = []; p.forEach(sweep); });
+    pending.push.apply(pending, nodes);
+  }
+  sweep(document.body);
+  document.addEventListener('toggle', function (e) { if (e.target.open) later([e.target]); }, true);
+  new MutationObserver(function (ms) { ms.forEach(function (m) { later([].slice.call(m.addedNodes)); }); })
+    .observe(document.body, { childList: true, subtree: true });
+  function show() {
+    var on = root.classList.contains('owsbig');
+    document.querySelectorAll('.owsbig-btn').forEach(function (b) {
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.textContent = on ? 'Normal text' : 'Larger text';
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.owsbig-btn');
+    if (!b) return;
+    var on = root.classList.toggle('owsbig');
+    try { localStorage.setItem(KEY, on ? 'large' : 'normal'); } catch (err) {}
+    show();
+  });
+  show();
+})();
+</script>
+<script data-home="../">
+(function () {
+  var root = document.documentElement, home = document.currentScript.getAttribute('data-home'), ja = root.classList.contains('owsja');
+  [].forEach.call(document.querySelectorAll('.owslang-btn[data-lang]'), function (b) { b.setAttribute('aria-pressed', String((b.getAttribute('data-lang') === 'ja') === ja)); });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.owslang-btn');
+    if (!b) return;
+    var to = b.getAttribute('data-lang') || (ja ? 'en' : 'ja'), u = new URL(location.href);
+    if ((to === 'ja') === ja) return;
+    try { localStorage.setItem('ows-lang', to); } catch (err) {}
+    u.searchParams.set('lang', to);
+    location.href = u.toString();
+  });
+  if (!ja) return;
+  function ready() { root.classList.add('owsja-ready'); }
+  fetch(home + 'i18n/ja.json').then(function (r) { return r.json(); }).then(start).catch(function (e) { window.owsLangError = String(e && e.stack || e); ready(); });
+  function start(D) {
+    var norm = function (s) { return s.replace(/\s+/g, ' ').trim(); };
+    var pats = D.patterns.map(function (p) { return [new RegExp(p[0]), p[1]]; });
+    var esc = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+    var refRe = new RegExp('^(' + Object.keys(D.books).sort(function (a, b) { return b.length - a.length; }).map(esc).join('|') + ') (\\d+)(?::(\\d+(?:[-,]\\d+)*))?$');
+    var abbrRe = new RegExp('^(' + Object.keys(D.bookAbbr).join('|') + ') (\\d+):(\\d+)$');
+    var OT = Object.keys(D.bookAbbr).slice(0, 39), page = (location.pathname.replace(/\/(index\.html)?$/, '').split('/').pop() || '');
+    /* Hebrew or Greek? The Hebrew word study, a Hebrew word (#H...) or an Old Testament chapter (#Gen.1) is Hebrew. */
+    function hebrew() { var h = location.hash.slice(1); return page === 'hebrew' || /^H\d/.test(h) || OT.indexOf(h.split(/[.\/]/)[0]) >= 0; }
+    var phrases = (D.grammarPhrases || []).map(function (p) { return [new RegExp(p[0], 'gi'), p[1]]; });
+    var tidy = (D.grammarTidy || []).map(function (p) { return [new RegExp(p[0], 'g'), p[1]]; });
+    function gram(s) {
+      phrases.forEach(function (p) { s = s.replace(p[0], p[1]); });
+      var parts = s.split(/(\s+|[·|,\/-]+)/), hit = false, out = [], heb = hebrew();
+      for (var i = 0; i < parts.length; i++) {
+        var w = parts[i];
+        if (!/[A-Za-z0-9]/.test(w)) { out.push(w); continue; }
+        var g = (!heb && D.grammarGreek && D.grammarGreek[w.toLowerCase()]) || D.grammar[w.toLowerCase()];
+        if (g === undefined) return null;
+        hit = true; out.push(g);
+      }
+      if (!hit) return null;
+      var r = out.join('').replace(/ +/g, ' ').trim();
+      tidy.forEach(function (p) { r = r.replace(p[0], p[1]); });
+      return r;
+    }
+    function tr(s) {
+      if (D.text[s] !== undefined) return D.text[s];
+      var m = refRe.exec(s);
+      if (m) return D.books[m[1]] + ' ' + m[2] + (m[3] ? ':' + m[3] : '章');
+      m = abbrRe.exec(s);
+      if (m) return D.bookAbbr[m[1]] + ' ' + m[2] + ':' + m[3];
+      for (var i = 0; i < pats.length; i++) {
+        m = pats[i][0].exec(s);
+        if (m) return pats[i][1].replace(/\{g:\$(\d)\}/g, function (_, n) { return gram(m[n]) || m[n]; })
+          .replace(/\{l:\$(\d)\}/g, function (_, n) {  // a list of names with notes in brackets, set in Japanese punctuation
+            var x = m[n].replace(/ \(([^)]*)\)/g, '（$1）').replace(/, /g, '、');
+            (D.listTerms || []).forEach(function (t) { x = x.split(t[0]).join(t[1]); });
+            return x; })
+          .replace(/\{\$(\d)\}/g, function (_, n) { return tr(m[n]) || D.books[m[n]] || m[n]; })
+          .replace(/\$(\d)/g, function (_, n) { return m[n]; });
+      }
+      return null;
+    }
+    var oneWordIn = D.oneWordIn, gramIn = D.grammarIn.join(','), abbrIn = D.abbrIn.join(',');
+    function text(n) {
+      var p = n.parentNode;
+      if (!p || p.nodeType !== 1 || /^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName)) return;
+      var raw = n.nodeValue, k = norm(raw);
+      if (!k || !/[A-Za-z]/.test(k)) return;
+      var r = null;
+      if (k.indexOf(' ') < 0 && D.text[k] !== undefined && !p.matches(oneWordIn)) r = null;
+      else r = tr(k);
+      if (p.tagName === 'OPTION' && D.grammarMenu && D.grammarMenu[k.toLowerCase()]) r = D.grammarMenu[k.toLowerCase()];
+      if (r === null && p.matches(gramIn)) r = gram(k);
+      if (r === null && p.closest(abbrIn) && D.bookAbbr[k]) r = D.bookAbbr[k];
+      if (r === null && p.tagName === 'OPTION' && D.books[k]) r = D.books[k];
+      if (r !== null && r !== k) n.nodeValue = raw.replace(/\S[\s\S]*\S|\S/, function () { return r; });
+    }
+    function block(el) {
+      if (!el.children.length || el.hasAttribute('data-ja')) return;
+      var t = el.textContent;
+      if (t.length > 1600) return;
+      var j = D.blocks[norm(t)];
+      if (j === undefined) return;
+      var kids = [].slice.call(el.children), frag = document.createDocumentFragment(), re = /<(\d+)>([\s\S]*?)<\/\1>/g, at = 0, m;
+      while ((m = re.exec(j))) {
+        if (m.index > at) frag.appendChild(document.createTextNode(j.slice(at, m.index)));
+        var c = kids[m[1] - 1] ? kids[m[1] - 1].cloneNode(false) : document.createElement('span');
+        c.textContent = m[2]; frag.appendChild(c); at = re.lastIndex;
+      }
+      if (at < j.length) frag.appendChild(document.createTextNode(j.slice(at)));
+      el.textContent = ''; el.appendChild(frag); el.setAttribute('data-ja', '1');
+    }
+    var ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+    /* A label that is a list of books with a number ("John 1, Revelation 4"), as the charts give screen readers. */
+    function list(v) {
+      var parts = v.split(/, */), out = [];
+      for (var i = 0; i < parts.length; i++) {
+        var m = /^(.+?) (\d+)$/.exec(parts[i]);
+        if (!m || !D.books[m[1]]) return null;
+        out.push(D.books[m[1]] + ' ' + m[2]);
+      }
+      return out.length > 1 ? out.join('、') : null;
+    }
+    function attrs(el) {
+      for (var i = 0; i < ATTRS.length; i++) {
+        var v = el.getAttribute(ATTRS[i]);
+        if (v && /[A-Za-z]/.test(v)) { var r = tr(norm(v)); if (r === null) r = list(norm(v)); if (r !== null && r !== v) el.setAttribute(ATTRS[i], r); }
+      }
+    }
+    function sweep(top) {
+      if (top.nodeType === 3) { text(top); return; }
+      if (top.nodeType !== 1) return;
+      var up = top.closest('p,li');
+      if (up) block(up);
+      [].forEach.call(top.querySelectorAll('p,li'), block);
+      attrs(top);
+      [].forEach.call(top.querySelectorAll('[placeholder],[aria-label],[title],[alt]'), attrs);
+      var w = document.createTreeWalker(top, NodeFilter.SHOW_TEXT), n, all = [];
+      while ((n = w.nextNode())) all.push(n);
+      all.forEach(text);
+    }
+    var t0 = tr(norm(document.title)); if (t0) document.title = t0;
+    var bar = document.querySelector('.a2bar');
+    if (bar && D.note && ['', 'join', 'lab', 'translation-benchmark', 'translation-system'].indexOf(page) < 0 && !document.body.classList.contains('ows-page')) {  /* the group's own pages have no English data on them */
+      var note = document.createElement('p'); note.className = 'owsja-note';
+      note.textContent = D.note + (D.pageNote && D.pageNote[page] ? ' ' + D.pageNote[page] : '');
+      bar.parentNode.insertBefore(note, bar.nextSibling);
+    }
+    sweep(document.body);
+    [].forEach.call(document.querySelectorAll('.owslang-btn:not([data-lang])'), function (b) { b.textContent = D.switch.toEn; b.lang = 'en'; });
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        if (m.type === 'attributes') attrs(m.target);
+        else if (m.type === 'characterData') text(m.target);
+        else [].forEach.call(m.addedNodes, sweep);
+      });
+    }).observe(document.body, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ATTRS });
+    ready();
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+:root {
+  --bg: #f6f4ee; --panel: #fffdf8; --ink: #1f2328; --mute: #5d6470; --line: #d9d4c7;
+  --accent: #1d5fa8; --accent-soft: #dce9f8; --same: #fff1b8; --hit: #ffd24a; --verse: #eef3e6;
+  --warn: #8a4b00; --warn-bg: #fff0d6; --warn-line: #e0a84f; --ok: #1f7a3a; --diff: #ffe1ea; --diff-line: #d9778f;
+  --s1: #2f62ad; --s2: #c27a1f; --s3: #23897a; --s4: #a63f6f; --s5: #6d7d22; --s6: #7d52b8; --s7: #b54d33; --s8: #3d8fb5; --s9: #8a6d3b; --s0: #9aa3ae;
+  --on-accent: #fff;
+  --serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+  --greek: "Gentium Plus", "SBL Greek", "New Athena Unicode", "Times New Roman", serif;
+  --sans: -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a; --panel: #1c1f23; --ink: #e8e6e1; --mute: #a2a8b3; --line: #343941;
+    --accent: #7db4f0; --accent-soft: #1f3550; --same: #4a4217; --hit: #8a6d00; --verse: #232b22;
+    --warn: #ffc56e; --warn-bg: #3a2a10; --warn-line: #7a5a20; --ok: #6fd08c; --diff: #4a2733; --diff-line: #a8566b;
+    --s1: #6f9be0; --s2: #e0a24f; --s3: #4fc0ad; --s4: #dc77a6; --s5: #a8bb4d; --s6: #ad8ae6; --s7: #e58466; --s8: #7cc6e6; --s9: #cfae74; --s0: #5f6874;
+    --on-accent: #10151c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+    --bg: #15171a; --panel: #1c1f23; --ink: #e8e6e1; --mute: #a2a8b3; --line: #343941;
+    --accent: #7db4f0; --accent-soft: #1f3550; --same: #4a4217; --hit: #8a6d00; --verse: #232b22;
+    --warn: #ffc56e; --warn-bg: #3a2a10; --warn-line: #7a5a20; --ok: #6fd08c; --diff: #4a2733; --diff-line: #a8566b;
+    --s1: #6f9be0; --s2: #e0a24f; --s3: #4fc0ad; --s4: #dc77a6; --s5: #a8bb4d; --s6: #ad8ae6; --s7: #e58466; --s8: #7cc6e6; --s9: #cfae74; --s0: #5f6874;
+    --on-accent: #10151c; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); display: flex; flex-direction: column; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.top { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
+.brand { white-space: nowrap; font-size: 14px; margin: 0; } .brand span { font-weight: 400; color: var(--mute); }
+.icon { border: 1px solid var(--line); background: transparent; border-radius: 6px; min-width: 32px; height: 32px; }
+#cmd { flex: 1 1 220px; min-width: 160px; }
+#cmdBox { width: 100%; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.chap { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+/* The language and text-size controls sit at the right end of the top bar, as on every page of the site (design/). */
+.wsctl { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 10px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.lay select { height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); margin-left: 4px; }
+.flag { border: 1px dashed var(--warn-line); color: var(--warn); background: var(--warn-bg); border-radius: 6px; padding: 4px 8px; white-space: nowrap; }
+.banner { background: var(--warn-bg); color: var(--warn); border-bottom: 1px solid var(--warn-line); padding: 5px 12px; font-size: 13px; }
+.status { min-height: 0; padding: 0 12px; font-size: 13px; color: var(--mute); }
+.status:not(:empty) { padding: 4px 12px; border-bottom: 1px solid var(--line); }
+.body { flex: 1; display: flex; min-height: 0; }
+.rail { width: 210px; flex: none; overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 8px; }
+.rail[hidden] { display: none; }
+.rail h2 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin: 12px 4px 4px; }
+.rail button.item { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 5px 8px; border-radius: 5px; }
+.rail button.item:hover, .rail button.item:focus-visible { background: var(--accent-soft); }
+.rail a.item { display: block; padding: 5px 8px; border-radius: 5px; color: inherit; text-decoration: none; }
+.rail a.item:hover, .rail a.item:focus-visible { background: var(--accent-soft); text-decoration: underline; }
+.brand a { color: inherit; text-decoration: none; }
+.rail a.homebtn { display: flex; align-items: center; gap: 8px; margin: 2px 0 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 999px; font-weight: 600; }
+.rail a.homebtn svg { flex: none; }
+.rail select { width: 100%; height: 30px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); margin: 2px 0 6px; }
+.rail .small { font-size: 12px; color: var(--mute); padding: 2px 8px; }
+.chgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; padding: 2px 6px; }
+.chgrid button { border: 1px solid var(--line); background: transparent; border-radius: 4px; padding: 2px 0; font-size: 12px; }
+.chgrid button[aria-current="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.dock { flex: 1; min-width: 0; position: relative; }
+.pane { height: 100%; overflow: auto; padding: 10px 14px 40px; background: var(--panel); color: var(--ink); }
+.pane > h2 { margin: 0 0 8px; font-size: 13px; color: var(--mute); font-weight: 600; }
+.vs { padding: 3px 6px; border-radius: 5px; margin: 0; cursor: pointer; }
+.vs.cur { background: var(--verse); }
+.vn { font: 600 11px var(--sans); color: var(--accent); margin-right: 6px; vertical-align: super; }
+.t-ja { font-family: var(--serif); font-size: 17px; line-height: 2.1; }
+.t-en { font-family: Georgia, serif; font-size: 16px; line-height: 1.7; }
+.t-gr { font-family: var(--greek); font-size: 18px; line-height: 1.8; }
+rt { font-size: 9px; color: var(--mute); }
+/* A link's review state is in its underline: dotted = machine draft, dashed = queued for a hand check,
+   solid green = a named person checked it, double = the reviewer was unsure. */
+.jl { border-bottom: 2px dotted var(--warn-line); cursor: pointer; }
+.jl.st-q, .j.st-q { border-bottom: 2px dashed var(--warn); }
+.jl.st-ok, .j.st-ok { border-bottom: 2px solid var(--ok); }
+.jl.st-un, .j.st-un { border-bottom: 3px double var(--warn); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; padding: 4px 12px; font-size: 12px; color: var(--mute); border-bottom: 1px solid var(--line); background: var(--panel); }
+.legend[hidden] { display: none; }  /* hidden on an Old Testament chapter and with the flag off */
+.legend .jl { cursor: default; color: var(--ink); }
+.legend b { color: var(--ink); }
+.gw { cursor: pointer; border-radius: 3px; }
+.ns, .vl, .vp { font: 11px var(--sans); color: var(--mute); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+.vp { border-style: dashed; }
+.chips.books button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.chips.books b { font-variant-numeric: tabular-nums; }
+.gw:hover, .jl:hover { background: var(--accent-soft); }
+.same { background: var(--same); } .hit { background: var(--hit) !important; }
+.il { display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 4px 6px 10px; border-radius: 5px; }
+.il.cur { background: var(--verse); }
+.il .vn { align-self: flex-start; margin-top: 6px; }
+.iw { display: flex; flex-direction: column; border: 0; background: transparent; text-align: left; padding: 2px 3px; border-radius: 4px; }
+.iw:hover { background: var(--accent-soft); }
+.iw .s { font: 18px var(--greek); }
+.iw .g { font-size: 12px; }
+.iw .m { font: 11px ui-monospace, Menlo, monospace; color: var(--mute); }
+.iw .j { font: 13px var(--serif); color: var(--warn); align-self: flex-start; }
+.iw .j.un { font: 10px var(--sans); color: var(--mute); border: 1px dashed var(--line); border-radius: 3px; padding: 0 3px; }
+.ws .here { margin-top: 6px; } .ws .here .state { font-size: 12px; color: var(--mute); }
+/* Parallel: a grid of versions while the tile is wide enough, one version under another when it is not */
+.pane { container-type: inline-size; }
+.parbar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-bottom: 8px; }
+.parbar .chips button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.parbar .small, .pardiff { font-size: 12px; color: var(--mute); }
+.par { display: grid; gap: 0 16px; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
+.par > div { padding: 4px 6px; border-bottom: 1px solid var(--line); }
+.par .hd { font: 600 12px var(--sans); color: var(--mute); position: sticky; top: -10px; background: var(--panel); z-index: 1; }
+.par .cur { background: var(--verse); }
+.par .tl { display: none; font: 600 10px var(--sans); color: var(--mute); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; margin-right: 6px; vertical-align: middle; }
+mark.df { background: var(--diff); color: inherit; border-radius: 2px; box-shadow: 0 1px 0 var(--diff-line); }
+@container (max-width: 560px) {
+  .par { display: block; }
+  .par .hd { display: none; }
+  .par .tl { display: inline-block; }
+  .par > div { border-bottom: 0; padding: 2px 6px; }
+  .par > div[data-verse]:not(.first) .vn { display: none; }
+  .par > div.first { border-top: 1px solid var(--line); margin-top: 4px; }
+}
+.pane.ws > h2 { font: 30px var(--greek); margin: 0; color: var(--ink); }
+.ws .meta { color: var(--mute); margin: 2px 0 10px; }
+.ws section { border-top: 1px solid var(--line); padding: 8px 0; }
+.ws h3 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--mute); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips button, .chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 1px 8px; font-size: 12px; }
+.chips button:hover { background: var(--accent-soft); }
+.draft { background: var(--warn-bg); border: 1px dashed var(--warn-line); border-radius: 6px; padding: 8px; }
+.draft .tag { font-weight: 700; color: var(--warn); }
+.rend { display: grid; grid-template-columns: minmax(6em, auto) 3em 1fr; gap: 2px 8px; align-items: center; margin-top: 6px; }
+.rend .ja { font: 15px var(--serif); } .rend .n { text-align: right; font-variant-numeric: tabular-nums; }
+.rend .bar { height: 8px; background: var(--warn-line); border-radius: 4px; min-width: 2px; }
+.notes textarea { width: 100%; min-height: 220px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); padding: 8px; }
+.btn { border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 4px 10px; color: inherit; text-decoration: none; display: inline-block; cursor: pointer; }
+table.src { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.src th, table.src td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+table.src tr.unv td { background: var(--warn-bg); }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tab { display: flex; align-items: center; gap: 6px; height: 100%; padding: 0 8px; white-space: nowrap; }
+.tabx { padding: 0 4px; border-radius: 4px; color: var(--mute); cursor: pointer; }
+.tabx:hover { background: var(--accent-soft); color: var(--ink); }
+/* Phone: the rail is a drawer over the workspace, the top bar is two short rows. */
+@media (max-width: 900px) {
+  .top { gap: 6px; padding: 6px 8px; }
+  #layLabel { display: none; }
+  .brand { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  #cmd { order: 1; flex: 1 1 calc(100% - 100px); min-width: 0; }
+  #railToggle { order: 0; }
+  .chap { order: 2; flex: 1 1 auto; }
+  .chap #chLabel { overflow: hidden; text-overflow: ellipsis; max-width: 46vw; font-size: 13px; }
+  .wsctl { order: 0; gap: 6px; } #cmd { flex-basis: 100%; } .lay { order: 4; } .flag { order: 5; font-size: 12px; }
+  .top .bigbtn { min-width: 40px; padding: 0 6px; } .top .bigbtn .lbl { display: none; } .top .bigbtn .glyph { display: inline; }
+  .seg button { padding: 5px 7px; }
+  .lay select { max-width: 34vw; margin-left: 0; }
+  .body { position: relative; }
+  .rail { position: absolute; z-index: 20; top: 0; bottom: 0; left: 0; width: min(280px, 86vw); box-shadow: 4px 0 18px rgba(0,0,0,.25); }
+  .pane { padding: 8px 10px 32px; }
+  .par { gap: 0 8px; }
+}
+/* Word Study: the rings (one a translation) and the ledger of every occurrence */
+.ws .small { font-size: 12px; color: var(--mute); margin: 0 0 6px; }
+svg.rings { display: block; width: 100%; max-width: 400px; height: auto; margin: 6px auto; }
+.slice { cursor: pointer; transition: opacity .15s ease; }
+.slice.draftring { stroke-dasharray: 2 2; }
+.dim .slice { opacity: .2; } .dim .slice.on { opacity: 1; }
+.slice:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ringname { font: 600 11px ui-monospace, Menlo, monospace; fill: var(--ink); paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
+.center-gk { font: 700 22px var(--greek); fill: var(--ink); } .center-n { font: 12px var(--sans); fill: var(--mute); }
+.wlg { display: grid; gap: 2px; margin: 6px 0; }
+.wlg.draft { background: var(--warn-bg); border: 1px dashed var(--warn-line); border-radius: 6px; padding: 6px; }
+.wlg .tag { font-weight: 700; color: var(--warn); font-size: 12px; }
+.lgrow { display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; align-items: center; text-align: left; border: 0; background: transparent; padding: 3px 4px; border-radius: 5px; font-size: 13px; }
+button.lgrow:hover, .lgrow.on { background: var(--accent-soft); }
+.lgrow .sw { width: 12px; height: 12px; border-radius: 3px; }
+.lgrow .num { font: 11px ui-monospace, Menlo, monospace; color: var(--mute); }
+.lgrow .t-ja { font-size: 15px; line-height: 1.4; }
+.occwrap { overflow-x: auto; }
+table.occ { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.occ th { text-align: left; font: 600 11px var(--sans); color: var(--mute); padding: 3px 8px 3px 0; position: sticky; top: 0; }
+table.occ td { border-top: 1px solid var(--line); padding: 4px 8px 4px 0; vertical-align: top; }
+table.occ td.t-ja { font-size: 14px; line-height: 1.5; }
+table.occ small { display: block; font: 10px ui-monospace, Menlo, monospace; color: var(--mute); }
+table.occ .na { color: var(--mute); font-size: 11px; }
+table.occ tr.here td { background: var(--verse); }
+.reflink { border: 0; background: transparent; color: var(--accent); padding: 0; text-align: left; white-space: nowrap; text-decoration: underline; }
+.hl { background: color-mix(in srgb, var(--hl) 28%, transparent); border-radius: 3px; padding: 0 2px; }
+@media (prefers-reduced-motion: reduce) { .slice { transition: none; } }
+/* Lexicon and commentary */
+.srcline { font-size: 11px; color: var(--mute); border-top: 1px solid var(--line); padding-top: 6px; margin-top: 12px; }
+.pane.lexi > h2 { color: var(--ink); } .lexi .lemma { font: 26px var(--greek); } .lexi .meta { font-weight: 400; color: var(--mute); }
+.lexi .small, .comm .small { font-size: 12px; color: var(--mute); margin: 4px 0 8px; }
+.lx { font: 15px/1.6 Georgia, serif; }
+.lx [lang="grc"] { font-family: var(--greek); font-size: 1.08em; } .lx [lang="he"] { font-size: 1.1em; }
+.lx-sense { margin: 4px 0 4px 14px; } .lx > .lx-sense { margin-left: 0; }
+.lx-n { font: 600 12px var(--sans); color: var(--accent); }
+.lx-etym { color: var(--mute); } .lx-re { margin-top: 6px; }
+.lx-ref { border: 0; background: transparent; color: var(--accent); padding: 0; font: inherit; text-decoration: underline; text-decoration-style: dotted; }
+.lx hr.lx-more { border: 0; border-top: 1px dashed var(--line); margin: 10px 0; }
+.comm .chips { margin-bottom: 2px; } .comm .chips button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.cm { padding: 4px 8px; border-radius: 5px; cursor: pointer; }
+.cm.cur { background: var(--verse); }
+.cm h3 { font: 600 12px var(--sans); color: var(--accent); margin: 4px 0 2px; }
+.cm p, .cintro p { font: 15px/1.6 Georgia, serif; margin: 0 0 8px; }
+.cintro { margin: 4px 0 8px; } .cintro summary { font-size: 12px; color: var(--mute); cursor: pointer; }
+mark.enhit { background: var(--hit); color: inherit; border-radius: 3px; }
+
+/* Larger text: the same switch as the other site pages (class owsbig, key ows-text). The dock keeps its
+   own geometry, so what grows is what is inside each pane, the top bar and the rail, not the page as a whole. */
+.bigbtn .glyph { display: none; font-weight: 600; }
+.bigbtn { border: 1px solid var(--line); background: transparent; border-radius: 6px; min-height: 32px; padding: 0 10px; white-space: nowrap; }
+.bigbtn[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+html.owsbig { --mute: var(--ink); }
+html.owsbig .pane > *, html.owsbig .rail > *, html.owsbig .banner, html.owsbig .legend, html.owsbig .status { zoom: 1.25; }
+html.owsbig .pane :is(p, li, dd) { line-height: 1.8; }
+html.owsbig :is(.top, .rail, .pane) :is(button, select, input[type="search"]) { min-height: 36px; }
+html.owsbig .rail { width: 250px; }
+html.owsbig .dv-tab .tab { font-size: 15px; }
+@media (min-width: 901px) { html.owsbig .top > * { zoom: 1.25; } }
+
+/* Furigana can be turned off (rail, Display): the reading goes, the text stays where it is. */
+html.noruby rt { display: none; }
+html.noruby .t-ja { line-height: 1.9; }
+.rail button.item[data-ruby] { border: 1px solid var(--line); }
+/* Text search */
+.srch form { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+.srch input[type="search"] { flex: 1 1 160px; min-width: 0; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.srch select, .srch form button { height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); padding: 0 8px; }
+.srch form button { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.srch .count { color: var(--mute); font-size: 13px; margin: 0 0 6px; }
+.srch ol { list-style: none; margin: 0; padding: 0; }
+.srch li { border-top: 1px solid var(--line); }
+.srch .sres { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 7px 4px; }
+.srch .sres:hover, .srch .sres:focus-visible { background: var(--accent-soft); }
+.srch .sres .ref { display: block; font: 600 12px var(--sans); color: var(--accent); }
+.srch .sres mark { background: var(--hit); color: inherit; border-radius: 2px; }
+
+/* Guided study */
+.guide h3 { font-size: 16px; margin: 10px 0 4px; }
+.guide .gdraft { background: #fff4e0; color: #6a4300; border: 1px solid #e8c88f; border-radius: 6px; padding: 6px 8px; font-size: 13px; }
+.guide .gsteps { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; padding: 0; margin: 6px 0; }
+.guide .gsteps button { min-width: 30px; min-height: 30px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); cursor: pointer; }
+.guide .gsteps button[aria-current="true"] { border-color: var(--accent); border-width: 2px; font-weight: 700; }
+.guide .gsteps button.gdone { background: var(--accent-soft); }
+.guide .gact { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.guide textarea { width: 100%; min-height: 90px; box-sizing: border-box; font: inherit; }
+.guide .grow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+@media (prefers-color-scheme: dark) { .guide .gdraft { background: #3a2a10; color: #f3d9a6; border-color: #6b5228; } }
+
+/* Verse notes and highlights (colours chosen to keep text readable in both themes) */
+.hl-y { background: rgba(255, 214, 64, .32) !important; } .hl-g { background: rgba(80, 200, 120, .26) !important; }
+.hl-b { background: rgba(80, 150, 240, .24) !important; } .hl-p { background: rgba(240, 110, 170, .24) !important; }
+.hl-o { background: rgba(255, 150, 60, .28) !important; }
+.notes textarea { width: 100%; min-height: 80px; box-sizing: border-box; font: inherit; }
+.notes .vcol { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; align-items: center; }
+.notes .sw { min-width: 30px; min-height: 30px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; background: var(--bg); }
+.notes .sw[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 1px; }
+.notes .vlist { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; }
+.notes .vlist button { width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: var(--bg); cursor: pointer; }
+.notes .grow { display: flex; flex-wrap: wrap; gap: 6px; }
+.vn .nmark { margin-left: 2px; font-size: .8em; color: var(--accent); }
+
+/* Word menu card */
+.wmenu { position: fixed; z-index: 60; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.22); padding: 10px 12px; font-size: 14px; box-sizing: border-box; }
+.wmenu .wm-h { display: flex; align-items: baseline; gap: 8px; }
+.wmenu .wm-h b { font-size: 20px; }
+.wmenu .wm-x { margin-left: auto; min-width: 30px; min-height: 30px; border: 1px solid var(--line); border-radius: 999px; background: transparent; cursor: pointer; }
+.wmenu dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; margin: 6px 0; }
+.wmenu dt { color: var(--mute); } .wmenu dd { margin: 0; }
+.wmenu .wm-a { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Word by word table */
+.wtab .wtab-scroll { overflow-x: auto; margin-top: 6px; }
+.wtab table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.wtab th, .wtab td { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; vertical-align: top; }
+.wtab th { font-size: 12px; color: var(--mute); position: sticky; top: 0; background: var(--panel); }
+.wtab tbody tr { cursor: pointer; } .wtab tbody tr:hover, .wtab tbody tr.same { background: var(--accent-soft); }
+.wtab td[lang="grc"] { font-size: 16px; white-space: nowrap; }
+
+/* Cross references */
+.xr .xlist { padding-left: 1.4em; display: grid; gap: 8px; }
+.xr .xlist p { margin: 2px 0 4px; font-size: 14px; }
+
+/* Greek search */
+.gsr .gform { display: grid; gap: 6px; max-width: 520px; }
+.gsr .gform label { display: grid; gap: 2px; font-size: 13px; color: var(--mute); }
+.gsr .gform input, .gsr .gform select { font: inherit; color: var(--ink); padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.gsr .gform input { font-size: 16px; }
+.gsr ol { padding-left: 1.4em; }
+
+/* Word use */
+.use h3 { font-size: 14px; margin: 10px 0 4px; }
+.use .ulist { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.use .ulist button { width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; background: var(--bg); cursor: pointer; }
+
+/* Sentence parts under Greek words */
+.iw .pt { display: block; font-size: 11px; font-weight: 600; border-radius: 4px; padding: 0 4px; margin-top: 2px; width: fit-content; }
+.pt-s { background: rgba(80, 150, 240, .22); } .pt-o { background: rgba(240, 110, 170, .22); } .pt-io { background: rgba(255, 150, 60, .24); }
+.pt-p { background: rgba(80, 200, 120, .24); } .pt-v { background: rgba(255, 214, 64, .32); }
+
+/* word details (hover) */
+.hv .hv-w { font-size: 1.5em; margin-bottom: .3em; }
+.hv dl { display: grid; grid-template-columns: max-content 1fr; gap: .25em .8em; margin: 0 0 .6em; }
+.hv dt { color: var(--mute); }
+.hv dd { margin: 0; min-width: 0; }
+.hv .hv-lx { font-size: .92em; line-height: 1.5; }
+
+/* link set letter in a tab: a small button that moves the panel to the next set */
+.tabset { font-size: .78em; font-weight: 600; min-width: 1.5em; text-align: center; padding: 0 .35em; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; color: var(--mute); }
+.tabset:hover { color: var(--accent); border-color: var(--accent); }
+.tabset::after { content: attr(data-set); }
+.pane[data-set="B"] { box-shadow: inset 3px 0 0 var(--accent); }
+.pane[data-set="C"] { box-shadow: inset 3px 0 0 var(--ok); }
+/* guided study: study picker, teacher tools, editor, hand-in view */
+.guide .gpick { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 4px 0 6px; }
+.guide .gpick select { max-width: 100%; font: inherit; }
+.guide .gteach { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+.guide .gteach summary { cursor: pointer; font-size: 13px; }
+.guide .glink { min-height: 60px; font: 12px ui-monospace, Menlo, monospace; }
+.guide .gfield { display: block; font-size: 13px; margin: 6px 0; }
+.guide .gfield input, .guide .gfield select { display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 15px; padding: 4px 6px; }
+.guide .gfield textarea { min-height: 54px; }
+.guide .gstep { border: 1px solid var(--line); border-radius: 8px; margin: 8px 0; padding: 6px 10px; }
+.guide .gstep legend { font-size: 13px; font-weight: 700; }
+.guide .ghand h4 { margin: 10px 0 2px; font-size: 15px; }
+.guide .gans { white-space: normal; border-left: 3px solid var(--accent); padding-left: 8px; margin: 4px 0; }
+
+/* structure (clause outline) */
+.st .st-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 10px; }
+.st .st-lines { list-style: none; margin: 0; padding: 0; }
+.st .st-lines li { display: flex; align-items: baseline; gap: 6px; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.st .st-lines li.cur { background: var(--accent-soft); }
+.st .st-v { flex: 0 0 2.2em; font-size: .8em; color: var(--mute); background: none; border: 0; padding: 0; text-align: right; cursor: pointer; }
+.st .st-mv { flex: 0 0 auto; display: inline-flex; gap: 2px; }
+.st .st-mv button { font-size: .8em; min-width: 1.6em; padding: 0 .2em; border: 1px solid var(--line); border-radius: 4px; background: none; color: var(--mute); cursor: pointer; }
+.st .st-t { flex: 1 1 auto; min-width: 0; font-size: 1.12em; line-height: 1.7; }
+.st .st-t .gw { font: inherit; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; }
+.st .st-t .gw:hover, .st .st-t .gw:focus-visible { color: var(--accent); text-decoration: underline; }
+.st .st-k { display: inline-block; font-size: .68em; margin-right: .5em; padding: 0 .4em; border-radius: 4px; border: 1px solid var(--line); color: var(--mute); vertical-align: middle; }
+.st .st-adv { border-color: var(--accent); color: var(--accent); }
+.st .st-mod { border-color: var(--ok); color: var(--ok); }
+/* grammar terms */
+.gram h3 { font-size: 15px; margin: 12px 0 4px; }
+.gram dl { margin: 0; }
+.gram .gterm { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.gram dd { margin: 2px 0 0; }
+.gram .gex { border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 1px 6px; margin: 2px 2px 0 0; cursor: pointer; font: inherit; }
+.gram .gex:hover { background: var(--accent-soft); }
+.gram .gdraft { background: #fff4e0; color: #6a4300; border: 1px solid #e8c88f; border-radius: 6px; padding: 6px 8px; font-size: 13px; }
+@media (prefers-color-scheme: dark) { .gram .gdraft { background: #3a2a10; color: #f3d9a6; border-color: #6b5228; } }
+.gram [lang="grc"] { font-family: var(--greek); font-size: 1.08em; }
+/* reading plan (shares the guide's picker, teacher tools and field styles) */
+.rplan .gpick { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 4px 0 6px; }
+.rplan .gpick select { max-width: 100%; font: inherit; }
+.rplan .gteach { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+.rplan .gteach summary { cursor: pointer; font-size: 13px; }
+.rplan .glink { width: 100%; min-height: 60px; font: 12px ui-monospace, Menlo, monospace; }
+.rplan .grow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.rplan .gfield { display: block; font-size: 13px; margin: 6px 0; }
+.rplan .gfield input, .rplan .gfield textarea { display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 15px; padding: 4px 6px; }
+.rplan progress { width: 100%; }
+.rplan .rlist { padding-left: 1.6em; }
+.rplan .rlist li { margin: 3px 0; }
+.rplan .rlist li.rdone .rgo { color: var(--mute); text-decoration: line-through; }
+.rplan .rgo { border: 0; background: transparent; color: var(--accent); cursor: pointer; font: inherit; padding: 2px 4px; }
+/* reading aid and the three word-study mistakes */
+.ws .wsay { margin: 2px 0 4px; }
+.ws .wfall { border: 1px solid var(--line); border-left: 4px solid #c9962b; border-radius: 6px; padding: 4px 10px; margin: 10px 0; font-size: 13px; }
+.ws .wfall h3 { font-size: 14px; margin: 4px 0; }
+.ws .wfall ul { margin: 0 0 4px; padding-left: 1.2em; }
+.wmenu [lang="grc"] { font-family: var(--greek); }
+
+/* Hebrew interlinear (right to left) */
+.hb .hb-v { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.hb .hb-v .vn { flex: 0 0 auto; }
+.hb .hb-ws { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.hb .hw { display: inline-flex; flex-direction: column; align-items: center; text-align: center; max-width: 9em; }
+.hb .hw .h { font: 1.55em/1.5 "SBL Hebrew", "Ezra SIL", "Noto Serif Hebrew", "Times New Roman", serif; }
+.hb .hw .x { font-size: .78em; color: var(--mute); font-style: italic; }
+.hb .hw .g { font-size: .82em; }
+.hb .hw .m { font-size: .7em; color: var(--mute); }
+
+.hb .hw { background: none; border: 0; padding: 2px 3px; border-radius: 6px; color: inherit; font: inherit; cursor: pointer; }
+.hb .hw:hover, .hb .hw:focus-visible { background: var(--accent-soft); }
+.hb .hw.same { background: var(--accent-soft); outline: 1px solid var(--accent); }
+/* Hebrew Word Study */
+.hwd .hwd-h b { font: 2em/1.4 "SBL Hebrew", "Ezra SIL", "Noto Serif Hebrew", serif; }
+.hwd .hwd-bars { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 3px; }
+.hwd .hwd-bars li { display: grid; grid-template-columns: 7em 1fr 3em; align-items: center; gap: 6px; font-size: .9em; }
+.hwd .hwd-bars .bar { height: .7em; background: var(--accent); border-radius: 3px; }
+.hwd .hwd-bars .c { text-align: right; color: var(--mute); }
+.hwd .hwd-lx { font-size: .92em; line-height: 1.6; }
+.hwd .hwd-occ { display: flex; flex-wrap: wrap; gap: 4px; }
+.hwd .hwd-occ button { font-size: .82em; border: 1px solid var(--line); border-radius: 4px; background: none; color: inherit; padding: 1px 6px; cursor: pointer; }
+
+/* Hebrew search */
+.hsr form { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; }
+.hsr form label { display: grid; gap: 4px; flex: 1 1 16em; min-width: 0; }
+.hsr .hsr-list { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 4px; }
+.hsr .hsr-list button { width: 100%; text-align: left; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; color: inherit; cursor: pointer; }
+.hsr .hsr-list b { font: 1.3em "SBL Hebrew", "Ezra SIL", "Noto Serif Hebrew", serif; }
+
+/* katakana reading under each Greek word (Japanese screens) */
+.iw .k { display: block; font-size: .78em; color: var(--accent); line-height: 1.3; }
+.iw .k [lang="en"] { color: var(--mute); }
+.kn-note { margin-top: 0; }
+.kn-note p { margin: 4px 0 0; }
+.kn-note:not([open]) > p { display: none; }  /* closed: no box at all (Chrome keeps one for closed details content) */

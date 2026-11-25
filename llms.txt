@@ -1,0 +1,41 @@
+# Word of God Workshop (みことば工房)
+
+By Open Scripture Systems, a group of Christian volunteers who help open Bible translations and study tools become carefully checked and easy to use, beginning with Japanese. Volunteers check and suggest; the editors of each translation decide. Formerly Open Word Study (now the name of its word study tool only). Earlier addresses, https://vadneyk.github.io/open-word-study-site/ and https://vadneyk.github.io/open-scripture-systems/ , redirect here. The name comes from 2 Timothy 2:15, a workman who handles the word of truth rightly.
+
+> Free Bible study tools for the Greek New Testament and the Hebrew Old Testament, in English and Japanese. Every source and its licence is listed on the sources page. No account, no cost, no ads, and no data collected. Made for serious study by seminary students, teachers and pastors, including readers in Japan.
+
+みことば工房（Word of God Workshop、旧名 Open Word Study）は、ギリシア語の新約聖書とヘブライ語の旧約聖書を学ぶための無料ツール集です。日本語と英語で使えます。使っている資料とライセンスはすべて出典ページに載せています。アカウントも費用も広告もなく、利用者のデータを集めません。神学生、教師、牧師など、聖書を原語から丁寧に学びたい人のためのものです。
+
+Every page opens in Japanese with ?lang=ja added to its address. Greek, Hebrew and Strong's numbers are data and stay as they are.
+
+## Tools
+
+- [Word of God Workshop, the list of tools](https://open-scripture-systems.github.io/workshop/): Free Bible word study tools for Greek and Hebrew. No account, no cost. Every source and its licence is listed on the sources page. 日本語（みことば工房）：ギリシア語とヘブライ語で聖書のことばを学ぶための無料ツール集です。公開データだけで作っています。アカウント不要、無料、日本語で使えます。
+- [Join us, for volunteers](https://open-scripture-systems.github.io/join/): For people who read Japanese, people who read Greek, and designers: help make open Bible translations and study tools trustworthy and easy to use. Volunteers suggest; the editors of each translation decide. 日本語（参加する）：日本語が読める方、ギリシア語が読める方、デザイナーの方を探しています。自由に使える聖書の翻訳と学びの道具を、信頼でき、使いやすいものにする手伝いです。ボランティアは提案し、各翻訳の編集者が決めます。
+- [Lab (beta, under construction)](https://open-scripture-systems.github.io/lab/): Projects of Open Scripture Systems that are still being designed: a proposal and a method each, marked under construction. 日本語（ラボ）：Open Scripture Systems の、まだ設計中の取り組みです。それぞれ提案と方法だけで、「準備中」と表示しています。
+- [Translation Benchmark (beta, under construction)](https://open-scripture-systems.github.io/lab/translation-benchmark/): Under construction: a proposal for a public, checkable way to rate Bible translations (BB-Text) and film and TV adaptations (BB-Screen) on readability, context, faithfulness and doctrine, so their trade-offs can be seen. 日本語（翻訳ベンチマーク）：準備中：聖書の翻訳と、聖書を題材にした映画・テレビ作品を、読みやすさ、文脈、忠実さ、教理の面から、公開された確かめられる方法で評価し、それぞれの翻訳の得失を見えるようにする提案です。
+- [Translation System (beta, under construction)](https://open-scripture-systems.github.io/lab/translation-system/): Under construction: a proposal for translating the Bible for a reader's language and culture that keeps the history, makes the context visible, and leaves decisions to people. 日本語（翻訳システム）：準備中：歴史をそのまま保ち、もとの文脈を見えるようにしながら、読み手の言葉と文化に向けて聖書を訳す方法の提案です。決めるのは人です。
+- [Study Workspace (prototype)](https://open-scripture-systems.github.io/workspace/): A free study workspace for the New Testament: Japanese (Kougo-yaku, Bungo-yaku, the Denmo Bible draft in modern Japanese, the Freedom Bible draft), Greek with grammar, English, a lexicon and word study, side by side in tiles you can drag. 日本語（スタディ・ワークスペース（試作））：新約聖書の無料の学習用ワークスペース。口語訳・文語訳（ふりがな付き）・電網聖書（現代語の草稿）・フリーダム・バイブル（草案）、文法付きのギリシア語本文、英訳、辞書、語句研究を、動かせるタイルに並べて読めます。
+- [Interlinear Reader](https://open-scripture-systems.github.io/reader/): Read the Bible in English with the Greek or Hebrew word under each English word. No Greek or Hebrew needed. 日本語（逐語対訳リーダー）：英語の本文を、単語ごとにギリシア語・ヘブライ語を添えて読めます。原語を読めなくても使えます。
+- [Compare Translations](https://open-scripture-systems.github.io/compare/): See how three open English translations say the same New Testament verse, and trace differences back to the Greek. 日本語（翻訳の比較）：公開されている三つの英訳が同じ節をどう訳しているかを比べ、違いをギリシア語までたどります。
+- [Word Study](https://open-scripture-systems.github.io/word-study/): Any Greek New Testament word: where it appears, its forms, and how open English translations render it. 日本語（語句研究）：新約聖書のギリシア語の語を一つ選び、出てくる箇所、語形、公開されている英訳での訳され方を調べます。
+- [Hebrew Word Study](https://open-scripture-systems.github.io/hebrew/): Any Hebrew Old Testament word: where it appears, its forms, and how open English renderings carry it. 日本語（ヘブライ語の語句研究）：旧約聖書のヘブライ語の語を一つ選び、出てくる箇所、語形、英語での訳され方を調べます。
+- [Word Wheel](https://open-scripture-systems.github.io/wheel/): One Greek or Hebrew word, every occurrence, one ring per open English translation. 日本語（ワードホイール（訳語の輪））：ギリシア語またはヘブライ語の語一つについて、すべての用例を、翻訳ごとの輪にして見比べます。
+- [Passage Workbench](https://open-scripture-systems.github.io/workbench/): Any New Testament chapter word by word: rare words, repeated words, and where Greek editions differ. 日本語（本文ワークベンチ）：新約聖書の章を単語ごとに見ます。まれな語、くり返される語、ギリシア語本文の版による違いが分かります。
+- [Passage Companion](https://open-scripture-systems.github.io/companion/): Read any chapter of the Bible with cross references and, in the New Testament, notes on hard phrases, people and places. 日本語（聖書箇所コンパニオン）：聖書のどの章でも、相互参照と、新約では難しい表現・人名・地名の注を横に置いて読めます。
+- [Grammar Lens](https://open-scripture-systems.github.io/lens/): Color the commands, the participles, or one word through any chapter of the Bible to see its shape, in Greek or Hebrew. 日本語（文法レンズ）：命令形、分詞、または一つの語に色を付けて、章の形をギリシア語・ヘブライ語で見ます。
+- [Verse Finder](https://open-scripture-systems.github.io/finder/): Find New Testament verses that meet several conditions: words, people, places and grammar. 日本語（節の検索）：語、人物、場所、文法など、いくつかの条件を同時に満たす新約聖書の節を探します。
+- [People and Places](https://open-scripture-systems.github.io/factbook/): The people, places and things the New Testament names, with every mention. 日本語（人名・地名事典）：新約聖書に出てくる人物・場所・事物と、その名前が出てくるすべての箇所。
+
+## What to know before citing it
+
+- Texts and data: SBLGNT and STEPBible TAGNT, TAHOT and TIPNR (CC BY 4.0), Berean Standard Bible, World English Bible, King James Version, 口語訳 (1954) and 文語訳 (1917) (public domain), unfoldingWord ULT, UST and Translation Notes (CC BY-SA 4.0), OpenBible.info cross references (CC BY 4.0), Abbott-Smith lexicon (1922).
+- No copyrighted translation is used (no ESV, NIV, 新改訳, 新共同訳 or 聖書協会共同訳).
+- In the Study Workspace, the links from Japanese words to Greek words are a machine draft. A person has checked only a small sample, and the page marks them as a draft. Do not cite them as a checked concordance.
+- It is a study aid and a work in progress, not a replacement for a full Bible software library, and it is not affiliated with any Bible software company.
+
+## More
+
+- [Sources and licences](https://open-scripture-systems.github.io/sources/)
+- [Updates, newest first](https://open-scripture-systems.github.io/updates/)
+- [Sitemap](https://open-scripture-systems.github.io/sitemap.xml)
